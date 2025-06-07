@@ -1,0 +1,58 @@
+/* modal.css */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
+.welcomeModalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.welcomeModalContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+}
+
+.welcomeModalLogo {
+    width: 15vw;
+    height: 15vw;
+    border-radius: 50%; /* Torna o logo redondo */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border: 5px;
+}
+
+.welcomeModalText {
+    text-align: center;
+    width: 100%;
+}
+
+.welcomeModalMessage {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #d512d5;;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    margin: 0;
+}
+
+@keyframes pulseAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.welcomeModalPulse {
+    animation: pulseAnimation 1.6s ease-in-out 3;
+}

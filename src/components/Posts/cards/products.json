@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Creme Facial Iluminador",
+    "image": "img1.jpeg",
+    "price": "R$ 69,90",
+    "description": "Deixa sua pele radiante e hidratada por 24h.",
+    "message": "Aproveite o preço promocional de lançamento!"
+  },
+  {
+    "id": 2,
+    "name": "Protetor Labial",
+    "image": "img2.jpeg",
+    "price": "R$ 99,90",
+    "description": "Você com cheiro verde",
+    "message": "Compre 2 e ganhe frete grátis!"
+  },
+  {
+    "id": 3,
+    "name": "Sérum Antioxidante2",
+    "image": "img3.jpeg",
+    "price": "R$ 919,90",
+    "description": "Pele de carneiro rose.",
+    "message": "Compre 2 e ganhe frete grátis!"
+  },
+  {
+    "id": 4,
+    "name": "Perfume one",
+    "image": "img4.jpeg",
+    "price": "R$ 19,90",
+    "description": "Odor de jasmin.",
+    "message": "Item em estoque, clique aqui"
+  },
+  {
+    "id": 5,
+    "name": "caixa perfume",
+    "image": "img5.jpeg",
+    "price": "R$ 218,90",
+    "description": "kit vera liz.",
+    "message": "comprar!"
+  },
+  {
+    "id": 7,
+    "name": "Avon o melhor da fragancia",
+    "image": "img6.jpeg",
+    "price": "R$ 59,99",
+    "description": "Pele protegida e luminosa.",
+    "message": "Clique e ganhe um desconto!"
+  }
+]

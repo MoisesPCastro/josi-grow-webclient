@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Josi Glow ✨
 
-## Getting Started
+Catálogo online de cosméticos com painel de administração integrado para gerenciamento de produtos.
 
-First, run the development server:
+## 🚀 Sobre o Projeto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Josi Glow é um site desenvolvido para divulgar e vender produtos cosméticos, permitindo a fácil administração dos itens diretamente pela web, sem necessidade de backend, utilizando [DecapCMS](https://decapcms.org/).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🖼️ Logo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+![Logo Josi Glow](./public/imgs/logo-josi-glow.png)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Tecnologias Utilizadas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js](https://nextjs.org/) — React Framework para sites rápidos e modernos
+- [Tailwind CSS](https://tailwindcss.com/) — Utilitário CSS para estilização rápida (opcional)
+- [DecapCMS](https://decapcms.org/) — Painel admin web conectado ao GitHub para gerenciamento dos produtos
+- [Vercel](https://vercel.com/) ou [Netlify](https://www.netlify.com/) — Deploy automático e gratuito
+- [GitHub](https://github.com/) — Controle de código e versionamento
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠️ Como rodar localmente
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone o projeto:**
+   ```bash
+   git clone https://github.com/seu-usuario/josi-glow.git
+   cd josi-glow
