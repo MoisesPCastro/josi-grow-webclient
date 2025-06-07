@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useCart } from '@/app/context/CardContext';
 import { useState } from 'react';
 import { ContactPopup } from '../modal/ContactPopup';
+import { IProduct } from '@/app/products/interfaces';
 
 export function CartSidebar() {
     const [isContactPopupOpen, setContactPopupOpen] = useState(false);
@@ -22,7 +23,7 @@ export function CartSidebar() {
                 }}>
                 <div className="p-4 h-full flex flex-col">
                     <div className="flex justify-between items-center border-b border-purple-300 pb-4">
-                        <h2 className="text-xl font-bold text-lime-600">Seu Carrinho</h2>
+                        <h2 className="text-xl font-bold text-lime-500">Seu Carrinho</h2>
                         <button onClick={toggleCart} className="text-white hover:text-purple-200">
                             ✕
                         </button>
@@ -32,11 +33,11 @@ export function CartSidebar() {
                         {cart.length === 0 ? (
                             <p className="text-purple-200">Seu carrinho está vazio</p>
                         ) : (
-                            cart.map((item: any) => (
-                                <div key={`${item.id}-${Date.now()}`} className="flex border-b border-purple-300 pb-4">
+                            cart.map((item: IProduct, index: number) => (
+                                <div key={`${item.id}-${index}`} className="flex border-b border-purple-300 pb-4">
                                     <div className="relative w-16 h-16 mr-4">
                                         <Image
-                                            src={`/imgs/product/${item.image}`}
+                                            src={`/imgs/products/${item.image}`}
                                             alt={item.name}
                                             fill
                                             className="object-cover rounded"

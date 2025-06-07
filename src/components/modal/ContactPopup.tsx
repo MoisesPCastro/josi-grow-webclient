@@ -10,17 +10,51 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
     const [isName, setName] = useState('');
     const [isPhone, setPhone] = useState('');
     const [isErrors, setErrors] = useState<IFormErrors>({ name: '', phone: '' });
-    const { cart } = useCart();
+    const { cart, toggleCart, setCart } = useCart();
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm(isName, isPhone, setErrors)) {
-            const productsList = cart.map(item => `- ${item.name} (${item.price})`).join('\n');
-            const message = `Olá! Sou ${isName} (${isPhone}).\nGostaria de comprar:\n${productsList}`;
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/SEU_NUMERO?text=${encodedMessage}`;
+            let total = 0;
+            const produtos = cart.map(item => {
+                const preco = Number(item.price.replace(/\D/g, '')) / 100;
+                total += preco;
+                return {
+                    idproduto: item.id,
+                    quantidade: 1, // ou item.quantidade, se existir
+                    valor: preco.toFixed(2)
+                };
+            });
 
-            window.open(whatsappUrl, '_blank');
-            onClose();
+            // Montar mensagem para WhatsApp
+            let mensagem = `🛒 *Novo Pedido*%0A`;
+            mensagem += `👤 *Cliente:* ${isName}%0A📞 *Telefone:* ${isPhone}%0A`;
+            mensagem += `%0A📦 *Resumo do Pedido:*%0A`;
+
+            cart.forEach(item => {
+                const preco = Number(item.price.replace(/\D/g, '')) / 100;
+                mensagem += `• 1x ${item.name} - R$ ${preco.toFixed(2).replace('.', ',')}%0A`;
+            });
+
+            mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
+
+            const payload = {
+                nome: isName,
+                telefone: isPhone,
+                produtos
+            };
+
+            try {
+                const numeroLoja = process.env.NEXT_PUBLIC_PHONE_MASTER;
+                const whatsappUrl = `https://wa.me/${numeroLoja}?text=${mensagem}`;
+                window.open(whatsappUrl, "_blank");
+
+                // Limpar carrinho e fechar modais
+                toggleCart();
+                setCart([]);
+                onClose();
+            } catch (error) {
+                console.error("Erro ao registrar pedido:", error);
+            }
         }
     };
 

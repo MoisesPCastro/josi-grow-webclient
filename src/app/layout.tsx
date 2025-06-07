@@ -22,8 +22,8 @@ export default function RootLayout({
       <html lang="pt-BR">
         <body>
           {children}
-          <CartIcon />
           <CartSidebar />
+          <CartIcon />
         </body>
       </html>
     </CartProvider>
