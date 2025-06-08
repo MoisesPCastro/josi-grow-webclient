@@ -1,11 +1,12 @@
 [
   {
     "id": 1,
-    "name": "Creme Facial Iluminador",
+    "name": "Creme Para Rosto",
     "image": "img1.jpeg",
-    "price": "R$ 69,90",
-    "description": "Deixa sua pele radiante e hidratada por 24h.",
-    "message": "Aproveite o preço promocional de lançamento!"
+    "price": "R$ 100,90",
+    "description": "Deixa sua pele negra.",
+    "message": "Clique e ganhe desconto!",
+    "status": true
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "image": "img2.jpeg",
     "price": "R$ 99,90",
     "description": "Você com cheiro verde",
-    "message": "Compre 2 e ganhe frete grátis!"
+    "message": "Compre 2 e ganhe frete grátis!",
+    "status": true
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "image": "img3.jpeg",
     "price": "R$ 919,90",
     "description": "Pele de carneiro rose.",
-    "message": "Compre 2 e ganhe frete grátis!"
+    "message": "Compre 2 e ganhe frete grátis!",
+    "status": true
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "image": "img4.jpeg",
     "price": "R$ 19,90",
     "description": "Odor de jasmin.",
-    "message": "Item em estoque, clique aqui"
+    "message": "Item em estoque, clique aqui",
+    "status": true
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "image": "img5.jpeg",
     "price": "R$ 218,90",
     "description": "kit vera liz.",
-    "message": "comprar!"
+    "message": "comprar!",
+    "status": true
   },
   {
     "id": 7,
@@ -45,6 +50,7 @@
     "image": "img6.jpeg",
     "price": "R$ 59,99",
     "description": "Pele protegida e luminosa.",
-    "message": "Clique e ganhe um desconto!"
+    "message": "Clique e ganhe um desconto!",
+    "status": true
   }
 ]

@@ -41,33 +41,35 @@ export default function Products() {
       </header>
 
       <section className="products-grid">
-        {products.map((product) => (
-          <div key={product.id} className="product-card">
-            <div
-              className="product-image-container cursor-zoom-in"
-              onClick={() => setSelectedImage({
-                src: `/imgs/products/${product.image}`,
-                alt: product.name
-              })}
-            >
-              <Image
-                src={`/imgs/products/${product.image}`}
-                alt={product.name}
-                fill
-                className="rounded object-contain"
-              />
+        {products
+          .filter(product => product.status)
+          .map(product => (
+            <div key={product.id} className="product-card">
+              <div
+                className="product-image-container cursor-zoom-in"
+                onClick={() => setSelectedImage({
+                  src: `/imgs/products/${product.image}`,
+                  alt: product.name
+                })}
+              >
+                <Image
+                  src={`/imgs/products/${product.image}`}
+                  alt={product.name}
+                  fill
+                  className="rounded object-contain"
+                />
+              </div>
+              <h2 className="product-name">{product.name}</h2>
+              <p className="product-price">{product.price}</p>
+              <p className="product-description">{product.description}</p>
+              <div
+                className="product-tag cursor-pointer hover:bg-opacity-80 transition"
+                onClick={() => addToCart(product)}
+              >
+                {product.message}
+              </div>
             </div>
-            <h2 className="product-name">{product.name}</h2>
-            <p className="product-price">{product.price}</p>
-            <p className="product-description">{product.description}</p>
-            <div
-              className="product-tag cursor-pointer hover:bg-opacity-80 transition"
-              onClick={() => addToCart(product)}
-            >
-              {product.message}
-            </div>
-          </div>
-        ))}
+          ))}
       </section>
     </div>
   );

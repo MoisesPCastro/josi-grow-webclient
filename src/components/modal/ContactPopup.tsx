@@ -37,15 +37,12 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
 
             mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
 
-            const payload = {
-                nome: isName,
-                telefone: isPhone,
-                produtos
-            };
-
             try {
                 const numeroLoja = process.env.NEXT_PUBLIC_PHONE_MASTER;
-                const whatsappUrl = `https://wa.me/${numeroLoja}?text=${mensagem}`;
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                const baseUrl = isMobile ? 'https://wa.me' : 'https://web.whatsapp.com/send';
+                const whatsappUrl = `${baseUrl}?phone=${numeroLoja}&text=${mensagem}`;
                 window.open(whatsappUrl, "_blank");
 
                 // Limpar carrinho e fechar modais

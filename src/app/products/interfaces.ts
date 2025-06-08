@@ -6,4 +6,5 @@ export
     price: string;
     description: string;
     message: string;
+    status: boolean;
 }
