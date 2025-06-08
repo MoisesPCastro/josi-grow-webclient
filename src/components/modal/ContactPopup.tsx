@@ -15,17 +15,6 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
     const handleSubmit = async () => {
         if (validateForm(isName, isPhone, setErrors)) {
             let total = 0;
-            const produtos = cart.map(item => {
-                const preco = Number(item.price.replace(/\D/g, '')) / 100;
-                total += preco;
-                return {
-                    idproduto: item.id,
-                    quantidade: 1, // ou item.quantidade, se existir
-                    valor: preco.toFixed(2)
-                };
-            });
-
-            // Montar mensagem para WhatsApp
             let mensagem = `🛒 *Novo Pedido*%0A`;
             mensagem += `👤 *Cliente:* ${isName}%0A📞 *Telefone:* ${isPhone}%0A`;
             mensagem += `%0A📦 *Resumo do Pedido:*%0A`;
@@ -45,7 +34,6 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
                 const whatsappUrl = `${baseUrl}?phone=${numeroLoja}&text=${mensagem}`;
                 window.open(whatsappUrl, "_blank");
 
-                // Limpar carrinho e fechar modais
                 toggleCart();
                 setCart([]);
                 onClose();
