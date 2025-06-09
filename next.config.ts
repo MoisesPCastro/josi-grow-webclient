@@ -5,7 +5,18 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['localhost'], // permite imagens de http://localhost
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'josi-grow-api.onrender.com',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/uploads/**',
+      },
+    ],
   },
 };
 

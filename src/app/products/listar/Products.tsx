@@ -101,6 +101,8 @@ export default function Products() {
                     ? product.image
                     : URL.createObjectURL(product.image);
 
+                  console.log('🔍 Caminho da imagem:', imageSrc); // 👈 Aqui você vê a URL
+
                   setSelectedImage({
                     src: imageSrc,
                     alt: product.name
