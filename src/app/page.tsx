@@ -1,6 +1,6 @@
 "use client";
 
-import Products from "./products/Products";
+import Products from "./products/listar/Products";
 export default function Home() {
   return <Products />;
 }
