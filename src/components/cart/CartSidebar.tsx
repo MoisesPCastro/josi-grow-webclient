@@ -47,7 +47,7 @@ export function CartSidebar() {
                                         <h3 className="font-medium text-white">{item.name}</h3>
                                         <p className="text-sm font-bold text-lime-600">{item.price}</p>
                                         <button
-                                            onClick={() => removeFromCart(item.id)}
+                                            onClick={() => removeFromCart(Number(item.id))}
                                             className="text-xs border border-white text-red-400 rounded-full hover:text-red-300 mt-1 px-2 py-0.5 transition-colors"
                                         >
                                             Remover
