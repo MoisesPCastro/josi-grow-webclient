@@ -1,21 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'josi-grow-api.onrender.com',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        pathname: '/uploads/**',
-      },
+    domains: [
+      'res.cloudinary.com',          // imagens do Cloudinary
+      'josi-grow-api.onrender.com',  // se ainda usar seu backend
+      'localhost',                   // em dev local
     ],
   },
 };

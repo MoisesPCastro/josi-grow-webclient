@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CardContext";
 import { IProduct } from "../interfaces";
-import { listProduts } from "@/services/requestApis";
+import { listProducts } from "@/services/requestApis"; // <- nome corrigido
 import WelcomeModal from "@/components/modal/WelComeModal";
 import ManagePopup from "@/components/modal/ManagePopup";
 import "@/app/products/products.css";
@@ -22,7 +22,7 @@ export default function Products() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await listProduts(true);
+        const data = await listProducts(true);
         setProducts(data);
       } catch (error) {
         console.error("Error loading products:", error);
@@ -96,22 +96,13 @@ export default function Products() {
             <article key={product.id} className="product-card">
               <div
                 className="product-image-container cursor-zoom-in"
-                onClick={() => {
-                  const imageSrc = typeof product.image === 'string'
-                    ? product.image
-                    : URL.createObjectURL(product.image);
-
-                  console.log('🔍 Caminho da imagem:', imageSrc); // 👈 Aqui você vê a URL
-
-                  setSelectedImage({
-                    src: imageSrc,
-                    alt: product.name
-                  })
-                }}
+                onClick={() =>
+                  setSelectedImage({ src: product.imageUrl, alt: product.name })
+                }
                 aria-label={`Ampliar imagem de ${product.name}`}
               >
                 <Image
-                  src={typeof product.image === 'string' ? product.image : ''}
+                  src={product.imageUrl}
                   alt={product.name}
                   fill
                   className="rounded object-contain"
@@ -119,6 +110,7 @@ export default function Products() {
                   priority={products.indexOf(product) < 4}
                 />
               </div>
+
               <h2 className="product-name">{product.name}</h2>
               <p className="product-price">{product.price}</p>
               <p className="product-description">{product.description}</p>
