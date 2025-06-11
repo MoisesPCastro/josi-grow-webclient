@@ -15,23 +15,24 @@ import CloseButton from "@/components/bottons/closeButton";
 
 export default function ManagePage() {
     const router = useRouter();
-    const [authenticated, setAuthenticated] = useState(false);
-    const [activeTab, setActiveTab] = useState<"view" | "create" | "edit">("view");
-    const [products, setProducts] = useState<IProduct[]>([]);
-    const [editingProduct, setEditingProduct] = useState<IProduct | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [isAuthenticated, setAuthenticated] = useState(false);
+    const [isActiveTab, setActiveTab] = useState<"view" | "create" | "edit">("view");
+    const [isProducts, setProducts] = useState<IProduct[]>([]);
+    const [isEditingProduct, setEditingProduct] = useState<IProduct | null>(null);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (authenticated) {
-            loadProducts();
-        }
-    }, [authenticated]);
+        const isAdmin = sessionStorage.getItem("heigth") === "true";
+        setAuthenticated(isAdmin);
+        loadProducts();
+
+    }, [isAuthenticated]);
 
     const loadProducts = async () => {
         setLoading(true);
         try {
             const data = await listProducts();
-            setProducts(data);
+            setProducts(data.products);
         } catch (error) {
             console.error("Erro ao carregar produtos:", error);
         } finally {
@@ -55,14 +56,14 @@ export default function ManagePage() {
     };
 
     const handleUpdate = async (dto: UpdateProductDTO) => {
-        if (!editingProduct) throw new Error('Produto não selecionado');
-        await updateProduct(editingProduct.id, dto);
+        if (!isEditingProduct) throw new Error('Produto não selecionado');
+        await updateProduct(isEditingProduct.id, dto);
         loadProducts();
         setEditingProduct(null);
         setActiveTab('view');
     };
 
-    if (!authenticated) {
+    if (!isAuthenticated) {
         return <ManagePopup onSuccess={() => setAuthenticated(true)} />;
     }
 
@@ -79,7 +80,7 @@ export default function ManagePage() {
             <div className="flex gap-2 mb-6">
                 <button
                     onClick={() => setActiveTab("view")}
-                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === "view"
+                    className={`px-4 py-2 rounded-md transition-colors ${isActiveTab === "view"
                         ? "bg-purple-600 text-white"
                         : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                         }`}
@@ -91,7 +92,7 @@ export default function ManagePage() {
                         setEditingProduct(null);
                         setActiveTab("create");
                     }}
-                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === "create"
+                    className={`px-4 py-2 rounded-md transition-colors ${isActiveTab === "create"
                         ? "bg-green-600 text-white"
                         : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                         }`}
@@ -100,11 +101,11 @@ export default function ManagePage() {
                 </button>
             </div>
 
-            {loading ? (
+            {isLoading ? (
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
                 </div>
-            ) : activeTab === "view" ? (
+            ) : isActiveTab === "view" ? (
                 <div className="overflow-x-auto bg-white rounded-lg shadow">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -133,7 +134,7 @@ export default function ManagePage() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {products.map((product) => (
+                            {isProducts.map((product) => (
                                 <tr key={product.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {product.id}
@@ -191,8 +192,8 @@ export default function ManagePage() {
                 </div>
             ) : (
                 <ProductForm
-                    initialData={editingProduct}
-                    isCreate={activeTab === 'create'}
+                    initialData={isEditingProduct}
+                    isCreate={isActiveTab === 'create'}
                     onCreate={handleCreate}
                     onUpdate={handleUpdate}
                     onCancel={() => setActiveTab('view')}

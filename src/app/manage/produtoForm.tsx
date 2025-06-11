@@ -19,6 +19,7 @@ export default function ProductForm({
                 description: initialData.description,
                 message: initialData.message,
                 status: initialData.status,
+                emphasis: initialData.emphasis,
             }
             : {
                 name: "",
@@ -26,6 +27,7 @@ export default function ProductForm({
                 description: "",
                 message: "",
                 status: true,
+                emphasis: false,
             }
     );
     const [selectedFile, setSelectedFile] = useState<File | null>(null);

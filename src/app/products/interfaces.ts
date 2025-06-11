@@ -7,6 +7,7 @@ export interface IProduct {
     status: boolean;
     imageUrl: string;
     publicId: string;
+    emphasis: boolean;
 }
 
 export interface IProductForm {
@@ -19,3 +20,8 @@ export interface IProductForm {
 }
 
 export type UpdateProductDTO = Omit<IProduct, 'id' | 'imageUrl' | 'publicId'>;
+
+export interface IProductsFile {
+    products: IProduct[];
+    orderBy: number[];
+}

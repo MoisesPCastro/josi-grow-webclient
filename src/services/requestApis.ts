@@ -1,4 +1,4 @@
-import { IProduct } from '@/app/products/interfaces';
+import { IProduct, IProductsFile } from '@/app/products/interfaces';
 import api from '@/services/api';
 import { AxiosError } from 'axios';
 
@@ -9,10 +9,10 @@ interface ApiError {
     statusCode: number;
 }
 
-export async function listProducts(status?: boolean): Promise<IProduct[]> {
+export async function listProducts(status?: boolean): Promise<IProductsFile> {
     try {
         const query = status !== undefined ? `?status=${status}` : '';
-        const { data } = await api.get<IProduct[]>(`${resource}${query}`);
+        const { data } = await api.get<IProductsFile>(`${resource}${query}`);
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;

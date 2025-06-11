@@ -37,7 +37,7 @@ export function CartSidebar() {
                                 <div key={`${item.id}-${index}`} className="flex border-b border-purple-300 pb-4">
                                     <div className="relative w-16 h-16 mr-4">
                                         <Image
-                                            src={`/imgs/products/${item.image}`}
+                                            src={item.imageUrl}
                                             alt={item.name}
                                             fill
                                             className="object-cover rounded"
