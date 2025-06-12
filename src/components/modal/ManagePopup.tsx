@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import CloseButton from "../bottons/closeButton";
+import { notify } from "@/shared/notifications";
 
 export default function ManagePopup({ onSuccess }: { onSuccess: (success: boolean) => void }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         const user = process.env.NEXT_PUBLIC_ADMIN_USER;
         const pass = process.env.NEXT_PUBLIC_ADMIN_PASS;
 
         if (username === user && password === pass) {
+            await notify('Acesso autorizado!', 'success')
             onSuccess(true);
         } else {
             setError("Usuário ou senha inválidos");

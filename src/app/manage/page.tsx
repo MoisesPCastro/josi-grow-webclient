@@ -7,11 +7,15 @@ import {
     updatedStatusProduct,
     createProduct,
     updateProduct,
+    updateOrderBy,
+    deleteProduct,
 } from "@/services/requestApis";
 import ManagePopup from "@/components/modal/ManagePopup";
 import ProductForm from "./produtoForm";
 import { IProduct, UpdateProductDTO } from "../products/interfaces";
 import CloseButton from "@/components/bottons/closeButton";
+import Swal from "sweetalert2";
+import { notify, notifyError } from "@/shared/notifications";
 
 export default function ManagePage() {
     const router = useRouter();
@@ -19,7 +23,14 @@ export default function ManagePage() {
     const [isActiveTab, setActiveTab] = useState<"view" | "create" | "edit">("view");
     const [isProducts, setProducts] = useState<IProduct[]>([]);
     const [isEditingProduct, setEditingProduct] = useState<IProduct | null>(null);
+    const [isOrderBy, setOrderBy] = useState<number[]>([]);
+    const [orderByInput, setOrderByInput] = useState<string>("");
+    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const [isLoading, setLoading] = useState(false);
+
+    const toggleMenu = (id: number) => {
+        setOpenMenuId(openMenuId === id ? null : id);
+    };
 
     useEffect(() => {
         const isAdmin = sessionStorage.getItem("heigth") === "true";
@@ -33,16 +44,19 @@ export default function ManagePage() {
         try {
             const data = await listProducts();
             setProducts(data.products);
+            setOrderBy(data.orderBy);
+            setOrderByInput(data.orderBy.join(","));
         } catch (error) {
             console.error("Erro ao carregar produtos:", error);
         } finally {
             setLoading(false);
         }
     };
-
     const handleStatusToggle = async (id: number, statusAtual: boolean) => {
         try {
+            const msg = !statusAtual ? "Ativado" : "Desativado";
             await updatedStatusProduct(id, !statusAtual);
+            notify(`Produto ${msg} com sucesso!`, 'success')
             loadProducts();
         } catch (error) {
             console.error("Erro ao alterar status:", error);
@@ -50,7 +64,10 @@ export default function ManagePage() {
     };
 
     const handleCreate = async (form: FormData) => {
+        setLoading(true);
         await createProduct(form);
+        setLoading(false);
+        notify('Produto Criado com sucesso!', 'success')
         loadProducts();
         setActiveTab('view');
     };
@@ -58,6 +75,7 @@ export default function ManagePage() {
     const handleUpdate = async (dto: UpdateProductDTO) => {
         if (!isEditingProduct) throw new Error('Produto não selecionado');
         await updateProduct(isEditingProduct.id, dto);
+        notify('Produto editado com sucesso!', 'success')
         loadProducts();
         setEditingProduct(null);
         setActiveTab('view');
@@ -66,6 +84,51 @@ export default function ManagePage() {
     if (!isAuthenticated) {
         return <ManagePopup onSuccess={() => setAuthenticated(true)} />;
     }
+
+    const handleOrderBySave = async () => {
+        const parsed = orderByInput
+            .split(',')
+            .map(s => s.trim())
+            .filter(s => s !== '')
+            .map(Number);
+
+        const hasInvalid = parsed.some(n => isNaN(n));
+        if (hasInvalid) {
+            setOrderByInput(isOrderBy.join(","));
+            await notify('Por favor, informe apenas números separados por vírgula.', 'error');
+            return;
+        }
+
+        try {
+            await updateOrderBy(parsed);
+            setOrderByInput(parsed.join(','));
+            notify('Ordem dos produtos atualizada!', 'success');
+        } catch {
+            notify('Falha ao salvar a ordem dos produtos.', 'error');
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        const { isConfirmed } = await Swal.fire({
+            title: 'Confirma exclusão?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+        });
+        if (!isConfirmed) return;
+
+        try {
+            setLoading(true);
+            await deleteProduct(id);
+            await notify('Produto excluído com sucesso!', 'success');
+            await loadProducts();
+            setLoading(false);
+        } catch {
+            setLoading(false);
+            await notifyError('Falha ao excluir produto.');
+        }
+    };
 
     return (
         <div className="p-8 max-w-6xl mx-auto relative min-h-screen">
@@ -101,6 +164,25 @@ export default function ManagePage() {
                 </button>
             </div>
 
+            {isActiveTab === "view" && (
+                <div className="mb-4 flex items-center gap-2">
+                    <label className="font-medium">Ordem (IDs):</label>
+                    <input
+                        type="text"
+                        value={orderByInput}
+                        onChange={e => setOrderByInput(e.target.value)}
+                        placeholder="ex: 5,15"
+                        className="border rounded px-2 py-1"
+                    />
+                    <button
+                        onClick={handleOrderBySave}
+                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                    >
+                        Salvar Ordem
+                    </button>
+                </div>
+            )}
+
             {isLoading ? (
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
@@ -127,6 +209,9 @@ export default function ManagePage() {
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
                                     Status
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
+                                    Promo
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
                                     Ações
@@ -161,28 +246,52 @@ export default function ManagePage() {
                                             {product.status ? "Ativo" : "Inativo"}
                                         </span>
                                     </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {product.emphasis ? "Sim" : "Não"}
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div className="flex gap-2">
+                                        <div className="relative inline-block text-left">
                                             <button
-                                                onClick={() =>
-                                                    handleStatusToggle(product.id!, product.status)
-                                                }
-                                                className={`px-3 py-1 rounded-md text-sm ${product.status
-                                                    ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                                    : "bg-green-500 hover:bg-green-600 text-white"
-                                                    }`}
+                                                onClick={() => toggleMenu(product.id)}
+                                                className="px-2 py-1 text-blue-500 hover:bg-gray-400 rounded"
                                             >
-                                                {product.status ? "Desativar" : "Ativar"}
+                                                •••
                                             </button>
-                                            <button
-                                                onClick={() => {
-                                                    setEditingProduct(product);
-                                                    setActiveTab("edit");
-                                                }}
-                                                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm"
-                                            >
-                                                Editar
-                                            </button>
+                                            {openMenuId === product.id && (
+                                                <div className="overflow-x-auto overflow-y-visible bg-white rounded-lg shadow">
+                                                    <button
+                                                        onClick={() => {
+                                                            handleStatusToggle(product.id, product.status);
+                                                            setOpenMenuId(null);
+                                                        }}
+                                                        className={`block w-full text-left px-4 py-2 hover:bg-gray-200 text-sm  ${product.status
+                                                            ? "text-yellow-500 hover:bg-yellow-600 "
+                                                            : "text-green-500 hover:bg-green-600"
+                                                            }`}
+                                                    >
+                                                        {product.status ? "Desativar" : "Ativar"}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setEditingProduct(product);
+                                                            setActiveTab("edit");
+                                                            setOpenMenuId(null);
+                                                        }}
+                                                        className="block w-full text-left px-4 py-2 hover:bg-gray-200 text-sm text-blue-600"
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleDelete(product.id);
+                                                            setOpenMenuId(null);
+                                                        }}
+                                                        className="block w-full text-left px-4 py-2 hover:bg-gray-200 text-sm text-red-600"
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

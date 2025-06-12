@@ -60,16 +60,28 @@ export default function ProductForm({
         }
     };
 
+    const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, "");
+
+        if (value.length === 0) {
+            setFormState(prev => ({ ...prev, price: "" }));
+            return;
+        }
+
+        const cents = parseInt(value, 10);
+        const realValue = (cents / 100).toFixed(2);
+
+        const formattedValue = realValue.replace(".", ",");
+        setFormState(prev => ({ ...prev, price: formattedValue }));
+    };
+
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
         try {
             const raw = isFormState.price.trim();
-            const priceValue = raw.startsWith("R$")
-                ? raw
-                : `R$ ${raw}`;
-
+            const priceValue = raw.startsWith("R$") ? raw : `R$ ${raw}`;
 
             if (isCreate) {
                 if (!selectedFile) {
@@ -77,17 +89,22 @@ export default function ProductForm({
                     return;
                 }
 
-
                 const formData = new FormData();
                 formData.append("name", isFormState.name);
                 formData.append("price", priceValue);
                 formData.append("description", isFormState.description);
                 formData.append("message", isFormState.message);
                 formData.append("status", isFormState.status ? "true" : "false");
+                formData.append("emphasis", isFormState.emphasis ? "true" : "false");
                 formData.append("image", selectedFile);
+
                 await onCreate(formData);
             } else {
-                const body: UpdateProductDTO = { ...isFormState, price: priceValue };
+                const body: UpdateProductDTO = {
+                    ...isFormState,
+                    price: priceValue,
+                    emphasis: Boolean(isFormState.emphasis),
+                };
                 await onUpdate(body);
             }
         } catch (err) {
@@ -95,6 +112,7 @@ export default function ProductForm({
             setError("Erro ao processar o formulário");
         }
     };
+
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -150,11 +168,16 @@ export default function ProductForm({
                     <input
                         type="text"
                         name="price"
-                        value={isFormState.price}
-                        onChange={handleChange}
+                        value={isFormState.price ? `R$ ${isFormState.price}` : ""}
+                        onChange={handlePriceChange}
+                        onBlur={(e) => {
+                            // Garante que sempre tenha 2 decimais
+                            if (isFormState.price && !isFormState.price.includes(",")) {
+                                setFormState(prev => ({ ...prev, price: `${isFormState.price},00` }));
+                            }
+                        }}
                         required
                         className="w-full px-3 py-2 border border-purple-500 rounded-md text-black placeholder-gray-400"
-
                     />
                 </div>
 
@@ -194,10 +217,20 @@ export default function ProductForm({
                         name="status"
                         checked={isFormState.status}
                         onChange={handleChange}
-                        className="mr-2"
+                        className="mr-1"
                     />
                     <label className="text-sm font-medium text-green-600">
                         Ativo
+                    </label>
+                    <input
+                        type="checkbox"
+                        name="emphasis"
+                        checked={isFormState.emphasis}
+                        onChange={handleChange}
+                        className="mr-1 ml-3"
+                    />
+                    <label className="text-sm font-medium text-green-600">
+                        Produto em Promoção?
                     </label>
                 </div>
 

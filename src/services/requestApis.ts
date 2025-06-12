@@ -60,7 +60,7 @@ export async function updateProduct(
     update: Partial<Omit<IProduct, 'id' | 'imageUrl' | 'publicId'>>,
 ): Promise<IProduct> {
     try {
-        const { data } = await api.put<IProduct>(`${resource}/${id}`, update);
+        const { data } = await api.put<IProduct>(`${resource}/update/${id}`, update);
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
@@ -76,7 +76,7 @@ export async function updatedStatusProduct(
 ): Promise<{ newStatus: boolean }> {
     try {
         const { data } = await api.put<{ newStatus: boolean }>(
-            `${resource}/${id}`,
+            `${resource}/update/${id}`,
             { status },
         );
         return data;
@@ -101,3 +101,20 @@ export async function deleteProduct(
         );
     }
 }
+
+
+export async function updateOrderBy(orderBy: number[]): Promise<number[]> {
+    try {
+        const response = await api.post<{ orderBy: number[] }>(
+            `${resource}/orderBy`,
+            { orderBy }
+        );
+        return response.data.orderBy;
+    } catch (error) {
+        const axiosError = error as AxiosError<ApiError>;
+        throw new Error(
+            axiosError.response?.data?.message || 'Falha ao atualizar orderBy'
+        );
+    }
+}
+

@@ -12,6 +12,7 @@ import "@/app/products/products.css";
 import { ImageModal } from "@/components/modal/ImgModal";
 import EmphasisModal from "@/components/modal/EmphasisModal";
 import LoadingSpinner from "@/components/loading/loadingSpinner";
+import { reorderProducts } from "@/shared/functions/rorderProducts";
 
 export default function Products() {
   const [isProducts, setProducts] = useState<IProduct[]>([]);
@@ -27,13 +28,12 @@ export default function Products() {
   useEffect(() => {
     (async () => {
       try {
-        const { products } = await listProducts(true);
-        setProducts(products);
-        const emph = products
-          .filter(p => p.emphasis)
-          .slice(0, 2);
-
+        const { products, orderBy } = await listProducts(true);
         setEmphasisProducts(products.filter(p => p.emphasis).slice(0, 2));
+
+        if (orderBy.length < 1) { return setProducts(products); }
+
+        setProducts(reorderProducts({ products, orderBy }))
       } catch (error) {
         console.error("Error loading products:", error);
       } finally {
@@ -55,7 +55,7 @@ export default function Products() {
 
   const handleLoginSuccess = (success: boolean) => {
     if (success) {
-      sessionStorage.setItem("isAdmin", "true");
+      sessionStorage.setItem("heigth", "true");
       router.replace("/manage");
     } else {
       setShowPopup(false);
