@@ -14,7 +14,7 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
 
     const handleSubmit = async () => {
         if (validateForm(isName, isPhone, setErrors)) {
-            let total = 0;
+            const total = 0;
             let mensagem = `🛒 *Novo Pedido*%0A`;
             mensagem += `👤 *Cliente:* ${isName}%0A📞 *Telefone:* ${isPhone}%0A`;
             mensagem += `%0A📦 *Resumo do Pedido:*%0A`;

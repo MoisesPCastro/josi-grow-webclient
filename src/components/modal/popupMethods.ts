@@ -1,8 +1,16 @@
 import { IFormErrors } from "./interfaces";
 
-export const validateForm = (name: string, phone: string, setErrors: React.Dispatch<React.SetStateAction<IFormErrors>>) => {
+export const validateForm = (
+    name: string,
+    phone: string,
+    setErrors: React.Dispatch<React.SetStateAction<IFormErrors>>
+): boolean => {
     let valid = true;
-    const newErrors = { name: '', phone: '' };
+
+    const newErrors: IFormErrors = {
+        name: '',
+        phone: '',
+    };
 
     if (name.length < 3) {
         newErrors.name = 'Nome deve ter pelo menos 3 caracteres';
@@ -19,7 +27,12 @@ export const validateForm = (name: string, phone: string, setErrors: React.Dispa
     return valid;
 };
 
-export const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, setPhone: any, Ierrors: any, setErrors: any) => {
+export const handlePhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setPhone: React.Dispatch<React.SetStateAction<string>>,
+    Ierrors: IFormErrors,
+    setErrors: React.Dispatch<React.SetStateAction<IFormErrors>>
+) => {
     const value = e.target.value;
     const digits = value.replace(/\D/g, '').substring(0, 11);
 
@@ -35,6 +48,7 @@ export const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, setPho
     }
 
     setPhone(formatted);
+
     if (Ierrors?.phone) {
         setErrors({ ...Ierrors, phone: '' });
     }

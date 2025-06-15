@@ -61,7 +61,7 @@ export default function ProductForm({
     };
 
     const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value.replace(/\D/g, "");
+        const value = e.target.value.replace(/\D/g, "");
 
         if (value.length === 0) {
             setFormState(prev => ({ ...prev, price: "" }));
@@ -170,7 +170,7 @@ export default function ProductForm({
                         name="price"
                         value={isFormState.price ? `R$ ${isFormState.price}` : ""}
                         onChange={handlePriceChange}
-                        onBlur={(e) => {
+                        onBlur={() => {
                             if (isFormState.price && !isFormState.price.includes(",")) {
                                 setFormState(prev => ({ ...prev, price: `${isFormState.price},00` }));
                             }

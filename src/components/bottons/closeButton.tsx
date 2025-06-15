@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
 import { ICloseButtonProps } from "./interfaces";
 
 export default function CloseButton({
