@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useCart } from '@/app/context/CardContext';
 import { handlePhoneChange, validateForm } from './popupMethods';
-import { isErrored } from 'stream';
 import { IFormErrors } from './interfaces';
 
 export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
@@ -78,7 +77,7 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
                         <input
                             type="tel"
                             value={isPhone}
-                            onChange={(e) => handlePhoneChange(e, setPhone, isErrored, setErrors)}
+                            onChange={(e) => handlePhoneChange(e, setPhone, isErrors, setErrors)}
                             className={`w-full px-3 py-2 border ${isErrors.phone ? 'border-red-500' : 'border-purple-500'} rounded-md text-black placeholder-gray-400`}
                             placeholder="(00) 00000-0000"
                         />
