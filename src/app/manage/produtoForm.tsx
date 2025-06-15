@@ -171,7 +171,6 @@ export default function ProductForm({
                         value={isFormState.price ? `R$ ${isFormState.price}` : ""}
                         onChange={handlePriceChange}
                         onBlur={(e) => {
-                            // Garante que sempre tenha 2 decimais
                             if (isFormState.price && !isFormState.price.includes(",")) {
                                 setFormState(prev => ({ ...prev, price: `${isFormState.price},00` }));
                             }

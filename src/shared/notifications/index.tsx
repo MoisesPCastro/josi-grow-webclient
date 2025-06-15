@@ -1,4 +1,3 @@
-// utils/notifications.ts
 import Swal from 'sweetalert2';
 
 export function notifySuccess(text: string) {

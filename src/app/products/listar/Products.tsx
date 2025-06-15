@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CardContext";
 import { IProduct } from "../interfaces";
-import { listProducts } from "@/services/requestApis"; // <- nome corrigido
+import { listProducts } from "@/services/requestApis";
 import WelcomeModal from "@/components/modal/WelComeModal";
 import ManagePopup from "@/components/modal/ManagePopup";
 import "@/app/products/products.css";
@@ -13,6 +13,7 @@ import { ImageModal } from "@/components/modal/ImgModal";
 import EmphasisModal from "@/components/modal/EmphasisModal";
 import LoadingSpinner from "@/components/loading/loadingSpinner";
 import { reorderProducts } from "@/shared/functions/rorderProducts";
+import { CartFloatingButton } from "@/components/icons/Cart-icon";
 
 export default function Products() {
   const [isProducts, setProducts] = useState<IProduct[]>([]);
@@ -68,6 +69,7 @@ export default function Products() {
 
   return (
     <div className="products-page">
+      <CartFloatingButton />
       {isShowWelcome && <WelcomeModal onClose={handleWelcomeDone} />}
       {isShowEmphasis && (
         <EmphasisModal

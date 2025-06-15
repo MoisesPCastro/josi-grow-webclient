@@ -8,21 +8,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 1rem; /* Reduzido para mobile */
   position: relative;
+  gap: 1rem; /* Espaço entre logo e título */
 }
 
 .product_logo {
-  position: absolute;
-  left: 5.2rem;
-  top: 50%;
-  transform: translateY(-50%);
+  position: static; /* Remove o posicionamento absoluto */
+  transform: none; /* Remove a transformação */
   z-index: 2;
+  flex-shrink: 0; /* Impede que o logo diminua demais */
 }
 
 .product-logo-header {
-  height: 85px;
-  width: 85px;
+  height: auto;
+  width: auto;
+  max-height: 85px;
+  max-width: 85px;
   border-radius: 50%;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   object-fit: cover;
@@ -32,8 +34,9 @@
 .header-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* Alinha à esquerda */
   justify-content: center;
+  text-align: left; /* Alinhamento à esquerda */
 }
 
 .products-title {
@@ -45,61 +48,85 @@
 
 .products-subtitle {
   color: #ef08ef;
-  font-size: 1.125rem;
-  max-width: 36rem;
-  text-align: center;
+  font-size: clamp(0.875rem, 3vw, 1.125rem); /* Tamanho responsivo */
+  max-width: 100%; /* Ajusta para mobile */
+  text-align: left; /* Alinhamento à esquerda */
 }
 
-/* Estilo do chavão */
 .eslogan {
   display: inline-block;
   font-family: initial;
-  font-size: 1rem;
+  font-size: clamp(0.75rem, 3vw, 1rem); /* Tamanho responsivo */
   color: chartreuse;
   transition: all 0.3s ease;
-  margin: 4px 0 3px 0;
+  margin: 2px 0; /* Margem reduzida */
 }
 
-/* Grid de produtos */
 .products-grid {
   max-width: 72rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 2rem;
-  padding: 0 1rem;
-  padding-bottom: 3rem;
+  grid-template-columns: repeat(2, 1fr); /* 2 colunas no mobile */
+  gap: 1rem; /* Espaço menor no mobile */
+  padding: 0 0.5rem;
+  padding-bottom: 2rem;
 }
 
+/* Tablet - 2 colunas (se quiser manter 2 colunas em tablets também) */
 @media (min-width: 640px) {
   .products-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding: 0 1rem;
   }
 }
 
 @media (min-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  
+  .products-header-flex {
+    padding: 2rem 0;
+  }
+  
+  .product_logo {
+    position: absolute;
+    left: 5.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .header-content {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .products-subtitle {
+    text-align: center;
   }
 }
 
-/* Card de produto */
+/* Desktop - 3 colunas */
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
 .product-card {
   background-color: white;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 1px solid #e6cba8;
+  padding: 0.5rem; /* Reduzir padding no mobile */
 }
 
 .product-image-container {
-  position: relative;
-  margin-top: 3px;
-  width: 10rem; /* w-44 */
-  height: 10rem; /* h-44 */
+  width: 100%; /* Ocupa toda a largura do card */
+  height: auto; /* Altura automática */
+  aspect-ratio: 1/1; /* Mantém proporção quadrada */
+  margin-top: 0.5rem;
 }
 
 .product-name {

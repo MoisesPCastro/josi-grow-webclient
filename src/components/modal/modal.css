@@ -125,4 +125,11 @@
     animation: pulse 1.2s ease-in-out 2;
   }
   
+  @media (max-width: 640px) {
+    .welcomeModalLogo {
+      width: 60vw !important;
+      height: 60vw !important;
+    }
+  }
+  
   

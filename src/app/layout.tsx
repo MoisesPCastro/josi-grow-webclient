@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { CartIcon } from "@/components/icons/Cart-icon";
 import { CartProvider } from "./context/CardContext";
 import { CartSidebar } from "@/components/cart/CartSidebar";
 
@@ -23,7 +22,6 @@ export default function RootLayout({
         <body>
           {children}
           <CartSidebar />
-          <CartIcon />
         </body>
       </html>
     </CartProvider>
