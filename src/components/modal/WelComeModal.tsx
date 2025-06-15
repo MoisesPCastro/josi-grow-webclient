@@ -3,12 +3,21 @@
 import { useEffect, useState } from "react";
 import "./modal.css";
 
-export default function WelcomeModal() {
+interface WelcomeModalProps {
+    onClose: () => void;
+}
+
+export default function WelcomeModal({ onClose }: WelcomeModalProps) {
     const [isOpen, setIsOpen] = useState(true);
 
     useEffect(() => {
-        setTimeout(() => setIsOpen(false), 3600);
-    }, []);
+        const timer = setTimeout(() => {
+            setIsOpen(false);
+            onClose();
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [onClose]);
 
     if (!isOpen) return null;
 
@@ -17,9 +26,7 @@ export default function WelcomeModal() {
             <div className="welcomeModalContainer">
                 <div
                     className="welcomeModalLogo welcomeModalPulse"
-                    style={{
-                        backgroundImage: "url('/imgs/logo-josi-glow.png')",
-                    }}
+                    style={{ backgroundImage: "url('/imgs/logo-josi-glow.png')" }}
                 />
                 <div className="welcomeModalText">
                     <p className="welcomeModalMessage">

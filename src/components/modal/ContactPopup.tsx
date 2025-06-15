@@ -25,14 +25,12 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
             });
 
             mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
-
             try {
                 const numeroLoja = process.env.NEXT_PUBLIC_PHONE_MASTER;
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                const mensagemUrl = encodeURIComponent(mensagem);
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${mensagemUrl}`;
 
-                const baseUrl = isMobile ? 'https://wa.me' : 'https://web.whatsapp.com/send';
-                const whatsappUrl = `${baseUrl}?phone=${numeroLoja}&text=${mensagem}`;
-                window.open(whatsappUrl, "_blank");
+                window.open(whatsappUrl, '_blank');
 
                 toggleCart();
                 setCart([]);
@@ -40,7 +38,7 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
             } catch (error) {
                 console.error("Erro ao registrar pedido:", error);
             }
-        }
+        };
     };
 
 

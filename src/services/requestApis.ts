@@ -1,53 +1,49 @@
-import { IProduct } from '@/app/products/interfaces';
+import { IProduct, IProductsFile } from '@/app/products/interfaces';
 import api from '@/services/api';
-import { TproductOrFormData } from '@/shared/types';
 import { AxiosError } from 'axios';
 
 const resource = 'api/v1/products';
-
 
 interface ApiError {
     message: string;
     statusCode: number;
 }
 
-export async function listProduts(status?: boolean): Promise<IProduct[]> {
+export async function listProducts(status?: boolean): Promise<IProductsFile> {
     try {
         const query = status !== undefined ? `?status=${status}` : '';
-        const { data } = await api.get(`${resource}${query}`);
+        const { data } = await api.get<IProductsFile>(`${resource}${query}`);
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
-        throw new Error(axiosError.response?.data?.message || 'Falha ao carregar produtos');
+        throw new Error(
+            axiosError.response?.data?.message || 'Falha ao carregar produtos'
+        );
     }
 }
 
-// Busca por ID com cache control
 export async function getByIdProduct(id: number): Promise<IProduct> {
     try {
-        const { data } = await api.get(`${resource}/${id}`, {
-            headers: {
-                'Cache-Control': 'no-cache',
-            },
+        const { data } = await api.get<IProduct>(`${resource}/${id}`, {
+            headers: { 'Cache-Control': 'no-cache' },
         });
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
-        throw new Error(axiosError.response?.data?.message || 'Produto não encontrado');
+        throw new Error(
+            axiosError.response?.data?.message || 'Produto não encontrado'
+        );
     }
 }
 
-// Criação com FormData e progresso
-export async function creatProduct(formData: TproductOrFormData): Promise<{ id: number }> {
+export async function createProduct(
+    formData: FormData
+): Promise<{ id: number }> {
     try {
-        const { data } = await api.post(resource, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round(
-                    (progressEvent.loaded * 100) / (progressEvent.total || 1)
-                );
+        const { data } = await api.post<{ id: number }>(resource, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+            onUploadProgress: (e) => {
+                Math.round((e.loaded * 100) / (e.total ?? 1));
             },
         });
         return data;
@@ -59,15 +55,13 @@ export async function creatProduct(formData: TproductOrFormData): Promise<{ id: 
     }
 }
 
-// Atualização parcial com validação
 export async function updateProduct(
     id: number,
-    update: IProduct
-): Promise<void> {
+    update: Partial<Omit<IProduct, 'id' | 'imageUrl' | 'publicId'>>,
+): Promise<IProduct> {
     try {
-        const { id: _, image: __, ...cleanedUpdate } = update;
-
-        await api.put(`${resource}/${id}`, cleanedUpdate);
+        const { data } = await api.put<IProduct>(`${resource}/update/${id}`, update);
+        return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
         throw new Error(
@@ -76,13 +70,15 @@ export async function updateProduct(
     }
 }
 
-// Status com confirmação
 export async function updatedStatusProduct(
     id: number,
-    status: boolean
+    status: boolean,
 ): Promise<{ newStatus: boolean }> {
     try {
-        const { data } = await api.put(`${resource}/${id}`, { status });
+        const { data } = await api.put<{ newStatus: boolean }>(
+            `${resource}/update/${id}`,
+            { status },
+        );
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
@@ -92,10 +88,11 @@ export async function updatedStatusProduct(
     }
 }
 
-// Exclusão com confirmação
-export async function deleteProduct(id: number): Promise<{ deleted: true }> {
+export async function deleteProduct(
+    id: number,
+): Promise<{ deleted: true }> {
     try {
-        const { data } = await api.delete(`${resource}/${id}`);
+        const { data } = await api.delete<{ deleted: true }>(`${resource}/${id}`);
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
@@ -104,3 +101,20 @@ export async function deleteProduct(id: number): Promise<{ deleted: true }> {
         );
     }
 }
+
+
+export async function updateOrderBy(orderBy: number[]): Promise<number[]> {
+    try {
+        const response = await api.post<{ orderBy: number[] }>(
+            `${resource}/orderBy`,
+            { orderBy }
+        );
+        return response.data.orderBy;
+    } catch (error) {
+        const axiosError = error as AxiosError<ApiError>;
+        throw new Error(
+            axiosError.response?.data?.message || 'Falha ao atualizar orderBy'
+        );
+    }
+}
+
