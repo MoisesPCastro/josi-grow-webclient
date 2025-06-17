@@ -1,6 +1,5 @@
 "use client";
 
-import Image from 'next/image';
 import { useCart } from '@/app/context/CardContext';
 import { useState, useEffect, useRef } from 'react';
 import { ContactPopup } from '../modal/ContactPopup';
@@ -70,10 +69,9 @@ export function CartSidebar() {
                             cart.map((item: IProduct, index: number) => (
                                 <div key={`${item.id}-${index}`} className="flex border-b border-purple-300 pb-4">
                                     <div className="relative w-16 h-16 mr-4">
-                                        <Image
+                                        <img
                                             src={item.imageUrl}
                                             alt={item.name}
-                                            fill
                                             className="object-cover rounded"
                                         />
                                     </div>
@@ -81,7 +79,7 @@ export function CartSidebar() {
                                         <h3 className="font-medium text-white">{item.name}</h3>
                                         <p className="text-sm font-bold text-lime-600">{item.price}</p>
                                         <button
-                                            onClick={() => removeFromCart(Number(item.id))}
+                                            onClick={() => removeFromCart(item.id)}
                                             className="text-xs border border-white text-red-400 rounded-full hover:text-red-300 mt-1 px-2 py-0.5 transition-colors"
                                             aria-label={`Remover ${item.name} do carrinho`}
                                         >

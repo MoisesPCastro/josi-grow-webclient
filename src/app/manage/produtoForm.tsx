@@ -150,13 +150,14 @@ export default function ProductForm({
 
                         />
                         {isPreviewUrl && (
-                            <div className="mt-2">
-                                <Image
-                                    src={isPreviewUrl}
-                                    alt="Pré-visualização"
-                                    className="h-20 object-contain"
-                                />
-                            </div>
+                            <img
+                                className="mt-1"
+                                src={isPreviewUrl}
+                                alt="Pré-visualização"
+                                width={100}
+                                height={100}
+                                style={{ objectFit: 'contain' }}
+                            />
                         )}
 
                     </div>

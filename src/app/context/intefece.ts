@@ -5,7 +5,7 @@ export
     cart: IProduct[];
     setCart: (cart: IProduct[]) => void;
     addToCart: (product: IProduct) => void;
-    removeFromCart: (productId: number) => void;
+    removeFromCart: (productId: string) => void;
     isCartOpen: boolean;
     toggleCart: () => void;
 }

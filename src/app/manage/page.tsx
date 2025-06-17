@@ -25,10 +25,10 @@ export default function ManagePage() {
     const [isEditingProduct, setEditingProduct] = useState<IProduct | null>(null);
     const [isOrderBy, setOrderBy] = useState<number[]>([]);
     const [orderByInput, setOrderByInput] = useState<string>("");
-    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(false);
 
-    const toggleMenu = (id: number) => {
+    const toggleMenu = (id: string) => {
         setOpenMenuId(openMenuId === id ? null : id);
     };
 
@@ -52,12 +52,14 @@ export default function ManagePage() {
             setLoading(false);
         }
     };
-    const handleStatusToggle = async (id: number, statusAtual: boolean) => {
+    const handleStatusToggle = async (id: string, statusAtual: boolean) => {
         try {
+            setLoading(true);
             const msg = !statusAtual ? "Ativado" : "Desativado";
             await updatedStatusProduct(id, !statusAtual);
             notify(`Produto ${msg} com sucesso!`, 'success')
             loadProducts();
+            setLoading(false);
         } catch (error) {
             console.error("Erro ao alterar status:", error);
         }
@@ -108,7 +110,7 @@ export default function ManagePage() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         const { isConfirmed } = await Swal.fire({
             title: 'Confirma exclusão?',
             icon: 'warning',
@@ -164,7 +166,7 @@ export default function ManagePage() {
                 </button>
             </div>
 
-            {isActiveTab === "view" && (
+            {/* {isActiveTab === "view" && (
                 <div className="mb-4 flex items-center gap-2">
                     <label className="font-medium">Ordem (IDs):</label>
                     <input
@@ -181,7 +183,7 @@ export default function ManagePage() {
                         Salvar Ordem
                     </button>
                 </div>
-            )}
+            )} */}
 
             {isLoading ? (
                 <div className="flex justify-center items-center h-64">

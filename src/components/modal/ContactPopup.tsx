@@ -11,33 +11,51 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
     const [isErrors, setErrors] = useState<IFormErrors>({ name: '', phone: '' });
     const { cart, toggleCart, setCart } = useCart();
 
+    function isMobileDevice(): boolean {
+        return /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+            .test(navigator.userAgent);
+    }
+
     const handleSubmit = async () => {
-        if (validateForm(isName, isPhone, setErrors)) {
-            const total = 0;
-            let mensagem = `🛒 *Novo Pedido*%0A`;
-            mensagem += `👤 *Cliente:* ${isName}%0A📞 *Telefone:* ${isPhone}%0A`;
-            mensagem += `%0A📦 *Resumo do Pedido:*%0A`;
+        if (!validateForm(isName, isPhone, setErrors)) return;
 
-            cart.forEach(item => {
-                const preco = Number(item.price.replace(/\D/g, '')) / 100;
-                mensagem += `• 1x ${item.name} - R$ ${preco.toFixed(2).replace('.', ',')}%0A`;
-            });
+        // 1) Calcula total corretamente
+        const total = cart.reduce((sum, item) => {
+            const preco = Number(item.price.replace(/\D/g, '')) / 100;
+            return sum + preco;
+        }, 0);
 
-            mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
-            try {
-                const numeroLoja = process.env.NEXT_PUBLIC_PHONE_MASTER;
-                const mensagemUrl = encodeURIComponent(mensagem);
-                const whatsappUrl = `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${mensagemUrl}`;
+        // 2) Monta mensagem
+        let mensagem = `🛒 *Novo Pedido*%0A`;
+        mensagem += `👤 *Cliente:* ${isName}%0A📞 *Telefone:* ${isPhone}%0A`;
+        mensagem += `%0A📦 *Resumo do Pedido:*%0A`;
+        cart.forEach(item => {
+            const preco = Number(item.price.replace(/\D/g, '')) / 100;
+            mensagem += `• 1x ${item.name} - R$ ${preco.toFixed(2).replace('.', ',')}%0A`;
+        });
+        mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
 
-                window.open(whatsappUrl, '_blank');
+        mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
+        console.log('message', mensagem);
+        console.log('>>>>>>>>', total);
 
-                toggleCart();
-                setCart([]);
-                onClose();
-            } catch (error) {
-                console.error("Erro ao registrar pedido:", error);
-            }
-        };
+        try {
+            const numeroLoja = process.env.NEXT_PUBLIC_PHONE_MASTER;
+            const mensagemUrl = encodeURIComponent(mensagem);
+            const isMobile = isMobileDevice();
+            const baseUrl = isMobile
+                ? `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${mensagemUrl}`
+                : `https://web.whatsapp.com/send?phone=${numeroLoja}&text=${mensagemUrl}`;
+
+            window.open(baseUrl, '_blank');
+
+            toggleCart();
+            setCart([]);
+            onClose();
+        } catch (error) {
+            console.error("Erro ao registrar pedido:", error);
+        }
+
     };
 
 

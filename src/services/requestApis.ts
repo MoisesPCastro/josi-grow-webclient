@@ -22,7 +22,7 @@ export async function listProducts(status?: boolean): Promise<IProductsFile> {
     }
 }
 
-export async function getByIdProduct(id: number): Promise<IProduct> {
+export async function getByIdProduct(id: string): Promise<IProduct> {
     try {
         const { data } = await api.get<IProduct>(`${resource}/${id}`, {
             headers: { 'Cache-Control': 'no-cache' },
@@ -38,9 +38,9 @@ export async function getByIdProduct(id: number): Promise<IProduct> {
 
 export async function createProduct(
     formData: FormData
-): Promise<{ id: number }> {
+): Promise<{ id: string }> {
     try {
-        const { data } = await api.post<{ id: number }>(resource, formData, {
+        const { data } = await api.post<{ id: string }>(resource, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
             onUploadProgress: (e) => {
                 Math.round((e.loaded * 100) / (e.total ?? 1));
@@ -56,11 +56,11 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-    id: number,
+    id: string,
     update: Partial<Omit<IProduct, 'id' | 'imageUrl' | 'publicId'>>,
 ): Promise<IProduct> {
     try {
-        const { data } = await api.put<IProduct>(`${resource}/update/${id}`, update);
+        const { data } = await api.put<IProduct>(`${resource}/${id}`, update);
         return data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
@@ -71,12 +71,12 @@ export async function updateProduct(
 }
 
 export async function updatedStatusProduct(
-    id: number,
+    id: string,
     status: boolean,
 ): Promise<{ newStatus: boolean }> {
     try {
         const { data } = await api.put<{ newStatus: boolean }>(
-            `${resource}/update/${id}`,
+            `${resource}/${id}`,
             { status },
         );
         return data;
@@ -89,7 +89,7 @@ export async function updatedStatusProduct(
 }
 
 export async function deleteProduct(
-    id: number,
+    id: string,
 ): Promise<{ deleted: true }> {
     try {
         const { data } = await api.delete<{ deleted: true }>(`${resource}/${id}`);

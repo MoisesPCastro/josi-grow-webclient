@@ -15,7 +15,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         setIsCartOpen(true);
     };
 
-    const removeFromCart = (productId: number) => {
+    const removeFromCart = (productId: string) => {
         setCart(cart.filter(item => item.id !== productId));
     };
 
