@@ -3,7 +3,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { UpdateProductDTO } from "../products/interfaces";
 import { IProductFormProps } from "./interface";
-import Image from "next/image";
 
 export default function ProductForm({
     initialData,

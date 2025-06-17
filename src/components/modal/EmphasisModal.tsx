@@ -27,8 +27,7 @@ export default function EmphasisModal({ products, onDone }: IEmphasisModalProps)
             }
         }, BLINK_INTERVAL);
         return () => clearTimeout(timer);
-    }, [isBlinkCount, index]);
-
+    }, [index, products.length, onDone, isBlinkCount]);
 
     if (index >= products.length) return null;
 

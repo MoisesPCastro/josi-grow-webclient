@@ -8,7 +8,7 @@ export interface IFormErrors {
 }
 
 export interface IProductEmphasis {
-    id: number;
+    id: string;
     name: string;
     imageUrl: string;
     price: string;

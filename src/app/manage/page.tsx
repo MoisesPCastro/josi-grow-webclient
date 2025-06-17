@@ -7,7 +7,7 @@ import {
     updatedStatusProduct,
     createProduct,
     updateProduct,
-    updateOrderBy,
+    //updateOrderBy,
     deleteProduct,
 } from "@/services/requestApis";
 import ManagePopup from "@/components/modal/ManagePopup";
@@ -23,8 +23,8 @@ export default function ManagePage() {
     const [isActiveTab, setActiveTab] = useState<"view" | "create" | "edit">("view");
     const [isProducts, setProducts] = useState<IProduct[]>([]);
     const [isEditingProduct, setEditingProduct] = useState<IProduct | null>(null);
-    const [isOrderBy, setOrderBy] = useState<number[]>([]);
-    const [orderByInput, setOrderByInput] = useState<string>("");
+    // const [isOrderBy, setOrderBy] = useState<number[]>([]);
+    // const [orderByInput, setOrderByInput] = useState<string>("");
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(false);
 
@@ -44,8 +44,8 @@ export default function ManagePage() {
         try {
             const data = await listProducts();
             setProducts(data.products);
-            setOrderBy(data.orderBy);
-            setOrderByInput(data.orderBy.join(","));
+            // setOrderBy(data.orderBy);
+            // setOrderByInput(data.orderBy.join(","));
         } catch (error) {
             console.error("Erro ao carregar produtos:", error);
         } finally {
@@ -87,28 +87,28 @@ export default function ManagePage() {
         return <ManagePopup onSuccess={() => setAuthenticated(true)} />;
     }
 
-    const handleOrderBySave = async () => {
-        const parsed = orderByInput
-            .split(',')
-            .map(s => s.trim())
-            .filter(s => s !== '')
-            .map(Number);
+    // const handleOrderBySave = async () => {
+    //     const parsed = orderByInput
+    //         .split(',')
+    //         .map(s => s.trim())
+    //         .filter(s => s !== '')
+    //         .map(Number);
 
-        const hasInvalid = parsed.some(n => isNaN(n));
-        if (hasInvalid) {
-            setOrderByInput(isOrderBy.join(","));
-            await notify('Por favor, informe apenas números separados por vírgula.', 'error');
-            return;
-        }
+    //     const hasInvalid = parsed.some(n => isNaN(n));
+    //     if (hasInvalid) {
+    //         setOrderByInput(isOrderBy.join(","));
+    //         await notify('Por favor, informe apenas números separados por vírgula.', 'error');
+    //         return;
+    //     }
 
-        try {
-            await updateOrderBy(parsed);
-            setOrderByInput(parsed.join(','));
-            notify('Ordem dos produtos atualizada!', 'success');
-        } catch {
-            notify('Falha ao salvar a ordem dos produtos.', 'error');
-        }
-    };
+    //     try {
+    //         await updateOrderBy(parsed);
+    //         setOrderByInput(parsed.join(','));
+    //         notify('Ordem dos produtos atualizada!', 'success');
+    //     } catch {
+    //         notify('Falha ao salvar a ordem dos produtos.', 'error');
+    //     }
+    // };
 
     const handleDelete = async (id: string) => {
         const { isConfirmed } = await Swal.fire({
