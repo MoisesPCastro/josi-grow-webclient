@@ -136,6 +136,14 @@
   margin-top: 0.5rem; /* mt-2 */
 }
 
+.product-marca {
+  font-weight: bold;
+  text-align: center;
+  color: green;
+  font-size: 1.2rem;
+  font-family: 'Dancing Script';
+}
+
 .product-price {
   color: #353505; /* text-champagne */
   font-weight: 700; /* font-bold */
@@ -151,7 +159,7 @@
 .product-tag {
   margin-top: 0.5rem; /* mt-2 */
   margin-bottom: 1rem;
-  background-color: #e6cba8; /* bg-champagne */
+  background-color: chartreuse; /* bg-champagne */
   color: #2d3142; /* text-slategray */
   padding: 0.25rem 0.75rem; /* px-3 py-1 */
   border-radius: 0.25rem; /* rounded */

@@ -19,35 +19,40 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
     const handleSubmit = async () => {
         if (!validateForm(isName, isPhone, setErrors)) return;
 
-        // 1) Calcula total corretamente
+        // calcula total
         const total = cart.reduce((sum, item) => {
-            const preco = Number(item.price.replace(/\D/g, '')) / 100;
+            const preco = Number(item.price.replace(/\D/g, "")) / 100;
             return sum + preco;
         }, 0);
 
-        // 2) Monta mensagem
-        let mensagem = `🛒 *Novo Pedido*%0A`;
-        mensagem += `👤 *Cliente:* ${isName}%0A📞 *Telefone:* ${isPhone}%0A`;
-        mensagem += `%0A📦 *Resumo do Pedido:*%0A`;
+        // monta o texto em linhas
+        const lines: string[] = [];
+        lines.push("🛒 Novo Pedido");
+        lines.push(`👤 Cliente: ${isName}`);
+        lines.push(`📞 Telefone: ${isPhone}`);
+        lines.push(""); // linha em branco
+        lines.push("📦 Resumo do Pedido:");
         cart.forEach(item => {
-            const preco = Number(item.price.replace(/\D/g, '')) / 100;
-            mensagem += `• 1x ${item.name} - R$ ${preco.toFixed(2).replace('.', ',')}%0A`;
+            const preco = Number(item.price.replace(/\D/g, "")) / 100;
+            const precoFmt = preco.toFixed(2).replace(".", ",");
+            lines.push(`* 1x ${item.name} - R$ ${precoFmt}`);
         });
-        mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
+        lines.push(""); // linha em branco antes do total
+        lines.push(`💰 Total: R$ ${total.toFixed(2).replace(".", ",")}`);
 
-        mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
-        console.log('message', mensagem);
-        console.log('>>>>>>>>', total);
+        // junta tudo com quebras de linha
+        const mensagem = lines.join("\n");
 
         try {
+            // === mantém este bloco idêntico ao seu atual ===
             const numeroLoja = process.env.NEXT_PUBLIC_PHONE_MASTER;
             const mensagemUrl = encodeURIComponent(mensagem);
             const isMobile = isMobileDevice();
             const baseUrl = isMobile
                 ? `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${mensagemUrl}`
                 : `https://web.whatsapp.com/send?phone=${numeroLoja}&text=${mensagemUrl}`;
-
-            window.open(baseUrl, '_blank');
+            window.open(baseUrl, "_blank");
+            // ===============================================
 
             toggleCart();
             setCart([]);
@@ -55,9 +60,7 @@ export const ContactPopup = ({ onClose }: { onClose: () => void }) => {
         } catch (error) {
             console.error("Erro ao registrar pedido:", error);
         }
-
     };
-
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

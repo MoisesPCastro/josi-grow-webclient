@@ -190,15 +190,24 @@ export default function ManagePage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
                 </div>
             ) : isActiveTab === "view" ? (
-                <div className="overflow-x-auto bg-white rounded-lg shadow">
+                <div className="
+                        overflow-auto 
+                        bg-white rounded-lg shadow
+                        max-h-[60vh]
+                        sm:max-h-[70vh]
+                        md:max-h-[77vh]"
+                >
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 sticky top-0">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
                                     ID
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
                                     Nome
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
+                                    Marca
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
                                     Preço
@@ -228,6 +237,9 @@ export default function ManagePage() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {product.name}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {product.marca}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {product.price}

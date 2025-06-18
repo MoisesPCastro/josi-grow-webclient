@@ -8,6 +8,7 @@ export interface IProduct {
     imageUrl: string;
     publicId: string;
     emphasis: boolean;
+    marca: string;
 }
 
 export interface IProductForm {

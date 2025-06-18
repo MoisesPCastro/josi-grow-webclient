@@ -20,6 +20,7 @@ export default function ProductForm({
                 message: initialData.message,
                 status: initialData.status,
                 emphasis: initialData.emphasis,
+                marca: initialData.marca,
             }
             : {
                 name: "",
@@ -28,12 +29,12 @@ export default function ProductForm({
                 message: "",
                 status: true,
                 emphasis: false,
+                marca: ""
             }
     );
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState<string>("");
     const [isPreviewUrl, setPreviewUrl] = useState<string | null>(null);
-
 
     const handleChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,6 +98,7 @@ export default function ProductForm({
                 formData.append("status", isFormState.status ? "true" : "false");
                 formData.append("emphasis", isFormState.emphasis ? "true" : "false");
                 formData.append("image", selectedFile);
+                formData.append("marca", isFormState.marca);
 
                 await onCreate(formData);
             } else {
@@ -161,6 +163,19 @@ export default function ProductForm({
 
                     </div>
                 )}
+                <div>
+                    <label className="block text-sm font-medium mb-1 text-green-600">
+                        Marca *
+                    </label>
+                    <input
+                        type="text"
+                        name="marca"
+                        value={isFormState.marca ?? ""}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-3 py-2 border border-purple-500 rounded-md text-black placeholder-gray-400"
+                    />
+                </div>
 
                 <div>
                     <label className="block text-sm font-medium mb-1 text-green-600">

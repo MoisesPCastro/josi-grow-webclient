@@ -119,6 +119,7 @@ export default function Products() {
         {isProducts.length > 0 ? (
           isProducts.map((product) => (
             <article key={product.id} className="product-card">
+              <h2 className="product-marca">{product.marca}</h2>
               <div
                 className="product-image-container cursor-zoom-in"
                 onClick={() =>
