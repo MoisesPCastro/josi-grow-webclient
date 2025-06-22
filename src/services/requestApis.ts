@@ -3,6 +3,7 @@ import api from '@/services/api';
 import { AxiosError } from 'axios';
 
 const resource = 'api/v1/products';
+const resourceOrderProduct = 'api/v1/setting';
 
 interface ApiError {
     message: string;
@@ -38,15 +39,15 @@ export async function getByIdProduct(id: string): Promise<IProduct> {
 
 export async function createProduct(
     formData: FormData
-): Promise<{ id: string }> {
+): Promise<string> {
     try {
-        const { data } = await api.post<{ id: string }>(resource, formData, {
+        const { data } = await api.post<{ message: string }>(resource, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
             onUploadProgress: (e) => {
                 Math.round((e.loaded * 100) / (e.total ?? 1));
             },
         });
-        return data;
+        return data.message;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
         throw new Error(
@@ -58,10 +59,10 @@ export async function createProduct(
 export async function updateProduct(
     id: string,
     update: Partial<Omit<IProduct, 'id' | 'imageUrl' | 'publicId'>>,
-): Promise<IProduct> {
+): Promise<string> {
     try {
-        const { data } = await api.put<IProduct>(`${resource}/${id}`, update);
-        return data;
+        const { data } = await api.put<{ message: string }>(`${resource}/${id}`, update);
+        return data.message;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
         throw new Error(
@@ -90,10 +91,9 @@ export async function updatedStatusProduct(
 
 export async function deleteProduct(
     id: string,
-): Promise<{ deleted: true }> {
+): Promise<void> {
     try {
-        const { data } = await api.delete<{ deleted: true }>(`${resource}/${id}`);
-        return data;
+        await api.delete<{ deleted: true }>(`${resource}/${id}`);
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
         throw new Error(
@@ -102,19 +102,33 @@ export async function deleteProduct(
     }
 }
 
-
-export async function updateOrderBy(orderBy: number[]): Promise<number[]> {
+export async function listOrderViewProduct(): Promise<string[]> {
     try {
-        const response = await api.post<{ orderBy: number[] }>(
-            `${resource}/orderBy`,
-            { orderBy }
-        );
-        return response.data.orderBy;
+        const response = await api.get<string[]>(`${resourceOrderProduct}/order-view`);
+        return response.data;
     } catch (error) {
         const axiosError = error as AxiosError<ApiError>;
         throw new Error(
-            axiosError.response?.data?.message || 'Falha ao atualizar orderBy'
+            axiosError.response?.data?.message ||
+            'Falha ao buscar ordem de exibição de produtos'
         );
     }
 }
 
+export async function updateOrderViewProduct(
+    orderViewProduct: string[]
+): Promise<string> {
+    try {
+        const response = await api.put<{ message: string }>(
+            `${resourceOrderProduct}/order-view`,
+            { orderViewProduct }
+        );
+        return response.data.message;
+    } catch (error) {
+        const axiosError = error as AxiosError<ApiError>;
+        throw new Error(
+            axiosError.response?.data?.message ||
+            'Falha ao atualizar ordem de exibição de produtos'
+        );
+    }
+}

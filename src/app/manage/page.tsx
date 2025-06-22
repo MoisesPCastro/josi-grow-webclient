@@ -9,6 +9,8 @@ import {
     updateProduct,
     //updateOrderBy,
     deleteProduct,
+    listOrderViewProduct,
+    updateOrderViewProduct,
 } from "@/services/requestApis";
 import ManagePopup from "@/components/modal/ManagePopup";
 import ProductForm from "./produtoForm";
@@ -23,8 +25,8 @@ export default function ManagePage() {
     const [isActiveTab, setActiveTab] = useState<"view" | "create" | "edit">("view");
     const [isProducts, setProducts] = useState<IProduct[]>([]);
     const [isEditingProduct, setEditingProduct] = useState<IProduct | null>(null);
-    // const [isOrderBy, setOrderBy] = useState<number[]>([]);
-    // const [orderByInput, setOrderByInput] = useState<string>("");
+    const [displayOrder, setDisplayOrder] = useState<string[]>([]);
+    const [displayOrderInput, setDisplayOrderInput] = useState("");
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(false);
 
@@ -42,16 +44,29 @@ export default function ManagePage() {
     const loadProducts = async () => {
         setLoading(true);
         try {
-            const data = await listProducts();
-            setProducts(data.products);
-            // setOrderBy(data.orderBy);
-            // setOrderByInput(data.orderBy.join(","));
+            const [data, orderIds] = await Promise.all([
+                listProducts(),
+                listOrderViewProduct(),
+            ]);
+
+            setDisplayOrder(orderIds);
+            setDisplayOrderInput(orderIds.join(","));
+
+            const sorted = [
+                ...orderIds
+                    .map((id) => data.products.find((p) => p.id === id))
+                    .filter((p): p is IProduct => !!p),
+                ...data.products.filter((p) => !orderIds.includes(p.id)),
+            ];
+
+            setProducts(sorted);
         } catch (error) {
             console.error("Erro ao carregar produtos:", error);
         } finally {
             setLoading(false);
         }
     };
+
     const handleStatusToggle = async (id: string, statusAtual: boolean) => {
         try {
             setLoading(true);
@@ -87,28 +102,30 @@ export default function ManagePage() {
         return <ManagePopup onSuccess={() => setAuthenticated(true)} />;
     }
 
-    // const handleOrderBySave = async () => {
-    //     const parsed = orderByInput
-    //         .split(',')
-    //         .map(s => s.trim())
-    //         .filter(s => s !== '')
-    //         .map(Number);
+    const handleDisplayOrderSave = async () => {
+        const parsed = displayOrderInput
+            .split(",")
+            .map((s) => s.trim())
+            .filter((s) => s !== "");
 
-    //     const hasInvalid = parsed.some(n => isNaN(n));
-    //     if (hasInvalid) {
-    //         setOrderByInput(isOrderBy.join(","));
-    //         await notify('Por favor, informe apenas números separados por vírgula.', 'error');
-    //         return;
-    //     }
+        try {
+            await updateOrderViewProduct(parsed);
+            setDisplayOrder(parsed);
+            setDisplayOrderInput(parsed.join(","));
 
-    //     try {
-    //         await updateOrderBy(parsed);
-    //         setOrderByInput(parsed.join(','));
-    //         notify('Ordem dos produtos atualizada!', 'success');
-    //     } catch {
-    //         notify('Falha ao salvar a ordem dos produtos.', 'error');
-    //     }
-    // };
+            setProducts((prev) => [
+                ...parsed
+                    .map((id) => prev.find((p) => p.id === id))
+                    .filter((p): p is IProduct => !!p),
+                ...prev.filter((p) => !parsed.includes(p.id)),
+            ]);
+
+            notify("Ordem de exibição salva com sucesso!", "success");
+        } catch {
+            notify("Falha ao salvar a ordem de exibição.", "error");
+            setDisplayOrderInput(displayOrder.join(","));
+        }
+    };
 
     const handleDelete = async (id: string) => {
         const { isConfirmed } = await Swal.fire({
@@ -166,24 +183,26 @@ export default function ManagePage() {
                 </button>
             </div>
 
-            {/* {isActiveTab === "view" && (
-                <div className="mb-4 flex items-center gap-2">
-                    <label className="font-medium">Ordem (IDs):</label>
-                    <input
-                        type="text"
-                        value={orderByInput}
-                        onChange={e => setOrderByInput(e.target.value)}
-                        placeholder="ex: 5,15"
-                        className="border rounded px-2 py-1"
-                    />
-                    <button
-                        onClick={handleOrderBySave}
-                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                    >
-                        Salvar Ordem
-                    </button>
-                </div>
-            )} */}
+            {isActiveTab === "view" && (
+                <>
+                    <div className="mb-4 flex items-center gap-2 min-w-0">
+                        <label className="font-medium flex-shrink-0">Ordem de Exibição (IDs):</label>
+                        <input
+                            type="text"
+                            value={displayOrderInput}
+                            onChange={(e) => setDisplayOrderInput(e.target.value)}
+                            placeholder="Adicione o id do produto aqui!"
+                            className=" flex-1 min-w-0 border rounded px-2 py-1"
+                        />
+                        <button
+                            onClick={handleDisplayOrderSave}
+                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                        >
+                            Salvar Ordem
+                        </button>
+                    </div>
+                </>
+            )}
 
             {isLoading ? (
                 <div className="flex justify-center items-center h-64">
