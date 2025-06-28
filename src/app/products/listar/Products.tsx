@@ -1,3 +1,4 @@
+// src/app/products/page.tsx
 "use client";
 
 import Image from "next/image";
@@ -17,6 +18,8 @@ import { CartFloatingButton } from "@/components/icons/Cart-icon";
 
 export default function Products() {
   const [isProducts, setProducts] = useState<IProduct[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<IProduct[]>([]);
+  const [filterTerm, setFilterTerm] = useState("");
   const [isSelectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
   const [isShowPopup, setShowPopup] = useState(false);
   const [isEmphasisProducts, setEmphasisProducts] = useState<IProduct[]>([]);
@@ -30,11 +33,15 @@ export default function Products() {
     (async () => {
       try {
         const { products, orderBy } = await listProducts(true);
-        setEmphasisProducts(products.filter(p => p.emphasis).slice(0, 2));
+        const emphasisList = products.filter(p => p.emphasis).slice(0, 2);
+        setEmphasisProducts(emphasisList);
 
-        if (orderBy.length < 1) { return setProducts(products); }
+        const sorted = orderBy.length
+          ? reorderProducts({ products, orderBy })
+          : products;
 
-        setProducts(reorderProducts({ products, orderBy }))
+        setProducts(sorted);
+        setDisplayedProducts(sorted);
       } catch (error) {
         console.error("Error loading products:", error);
       } finally {
@@ -42,6 +49,26 @@ export default function Products() {
       }
     })();
   }, []);
+
+  const handleFilter = () => {
+    const term = filterTerm.trim().toLowerCase();
+    if (!term) {
+      setDisplayedProducts(isProducts);
+    } else {
+      setDisplayedProducts(
+        isProducts.filter(
+          p =>
+            p.name.toLowerCase().includes(term) ||
+            p.marca.toLowerCase().includes(term)
+        )
+      );
+    }
+  };
+
+  const handleClearFilter = () => {
+    setFilterTerm("");
+    setDisplayedProducts(isProducts);
+  };
 
   const handleWelcomeDone = () => {
     setShowWelcome(false);
@@ -77,7 +104,6 @@ export default function Products() {
           onDone={handleEmphasisDone}
         />
       )}
-
       {isSelectedImage && (
         <ImageModal
           src={isSelectedImage.src}
@@ -85,10 +111,9 @@ export default function Products() {
           onClose={() => setSelectedImage(null)}
         />
       )}
-
       {isShowPopup && <ManagePopup onSuccess={handleLoginSuccess} />}
 
-      <header className="products-header-flex">
+      <header className="products-header-flex max-w-6xl mx-auto px-4">
         <div className="product_logo">
           <Image
             src="/imgs/logo-josi-glow.png"
@@ -101,23 +126,51 @@ export default function Products() {
         </div>
         <div className="header-content">
           <h1
-            className="products-title cursor-pointer hover:underline"
+            className="products-title cursor-pointer hover:underline text-center md:text-left"
             title="Clique para acessar o painel administrativo"
             onClick={() => setShowPopup(true)}
             aria-label="Painel administrativo"
           >
             Josi Glow
           </h1>
-          <span className="eslogan">Ilumine seu brilho, Liberte sua beleza!</span>
-          <div className="products-subtitle">
+          <p className="eslogan text-center md:text-left">
+            Ilumine seu brilho, Liberte sua beleza!
+          </p>
+          <p className="products-subtitle text-center md:text-left">
             Os melhores cosméticos para realçar sua beleza natural.
-          </div>
+          </p>
         </div>
       </header>
 
-      <section className="products-grid">
-        {isProducts.length > 0 ? (
-          isProducts.map((product) => (
+      <div className="max-w-6xl mx-auto px-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <input
+            type="text"
+            value={filterTerm}
+            onChange={e => setFilterTerm(e.target.value)}
+            placeholder="Buscar por nome do produto"
+            className="col-span-1 sm:col-span-2 w-full border rounded px-3 py-2"
+          />
+          <div className="col-span-1 flex gap-2">
+            <button
+              onClick={handleFilter}
+              className="flex-1 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            >
+              Filtrar
+            </button>
+            <button
+              onClick={handleClearFilter}
+              className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+            >
+              Limpar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <section className="products-grid max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {displayedProducts.length > 0 ? (
+          displayedProducts.map(product => (
             <article key={product.id} className="product-card">
               <h2 className="product-marca">{product.marca}</h2>
               <div
@@ -133,10 +186,9 @@ export default function Products() {
                   fill
                   className="rounded object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority={isProducts.indexOf(product) < 4}
+                  priority={displayedProducts.indexOf(product) < 4}
                 />
               </div>
-
               <h2 className="product-name">{product.name}</h2>
               <p className="product-price">{product.price}</p>
               <p className="product-description">{product.description}</p>
@@ -151,7 +203,9 @@ export default function Products() {
           ))
         ) : (
           <div className="col-span-full text-center py-10">
-            <p className="text-lg text-gray-600">Nenhum produto disponível no momento</p>
+            <p className="text-lg text-gray-600">
+              Nenhum produto disponível no momento
+            </p>
           </div>
         )}
       </section>

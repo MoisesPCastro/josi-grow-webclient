@@ -184,25 +184,39 @@ export default function ManagePage() {
             </div>
 
             {isActiveTab === "view" && (
-                <>
-                    <div className="mb-4 flex items-center gap-2 min-w-0">
-                        <label className="font-medium flex-shrink-0">Ordem de Exibição (IDs):</label>
-                        <input
-                            type="text"
+                <div className="mb-4 w-full">
+                    <label className="block mb-1 font-medium">
+                        Ordem de Exibição (IDs):
+                    </label>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <textarea
+                            rows={2}
                             value={displayOrderInput}
-                            onChange={(e) => setDisplayOrderInput(e.target.value)}
-                            placeholder="Adicione o id do produto aqui!"
-                            className=" flex-1 min-w-0 border rounded px-2 py-1"
+                            onChange={e => setDisplayOrderInput(e.target.value)}
+                            placeholder="Adicione os ids separados por vírgula aqui!"
+                            className="
+          block w-full             /* full-width no mobile */
+          sm:flex-1 sm:w-auto      /* flex-1 no desktop */
+          border rounded p-2
+          resize-y                 /* só permite redimensionar verticalmente */
+          text-sm
+        "
                         />
+
                         <button
                             onClick={handleDisplayOrderSave}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                            className="
+          block w-full             /* full-width no mobile */
+          sm:w-auto                /* auto width no desktop */
+          bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700
+        "
                         >
                             Salvar Ordem
                         </button>
                     </div>
-                </>
+                </div>
             )}
+
 
             {isLoading ? (
                 <div className="flex justify-center items-center h-64">
@@ -216,7 +230,7 @@ export default function ManagePage() {
                         sm:max-h-[70vh]
                         md:max-h-[77vh]"
                 >
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200 ">
                         <thead className="bg-gray-50 sticky top-0">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-purple-600 uppercase tracking-wider">
@@ -250,7 +264,10 @@ export default function ManagePage() {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {isProducts.map((product) => (
-                                <tr key={product.id} className="hover:bg-gray-50">
+                                <tr
+                                    key={product.id}
+                                    className="hover:bg-purple-200 even:bg-gray-200"
+                                >
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {product.id}
                                     </td>
